@@ -1,8 +1,21 @@
 #!/bin/bash
 
-TIMESTAMP=`date +%Y-%m-%d`
+#########################
+# Variables
+#########################
 
-xtrabackup --backup --target-dir=/root/backup/full/$TIMESTAMP
-xtrabackup --prepare --target-dir=/root/backup/full/$TIMESTAMP
+source configure_backup
 
-find /root/backup/full/ -mtime +14 -exec rm -rf {} \;
+#########################
+# Full Backup
+#########################
+
+mkdir -p $BACKUP_DIR
+mkdir -p $FULL_DST/$TIMESTAMP
+
+xtrabackup --backup --databases $DATABASE --target-dir=$FULL_DST/$TIMESTAMP
+xtrabackup --prepare --target-dir=$FULL_DST/$TIMESTAMP
+
+chown -R mysql:mysql $FULL_DST/$TIMESTAMP
+
+find $FULL_DST -mtime +14 -exec rm -rf {} \;
