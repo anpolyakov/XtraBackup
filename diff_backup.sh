@@ -1,11 +1,17 @@
 #!/bin/bash
 
-TIMESTAMP=`date +%Y-%m-%d`
+#########################
+# Variables
+#########################
 
-FULL_DST=/root/backup/full
-DIFF_DST=/root/backup/diff
+source configure_backup
 
-array=( $(find $FULL_DST -maxdepth 1 -type d -name '20*' | cut -c 19- | sort) )
-LAST_FULL_BACKUP=`echo ${array[-1]}`
+#########################
+# Diff Backup
+#########################
 
-xtrabackup --backup --target-dir=$DIFF_DST/$TIMESTAMP --incremental-basedir=$FULL_DST/$LAST_FULL_BACKUP
+mkdir -p $DIFF_DST/$TIMESTAMP
+
+xtrabackup --backup --databases=$DATABASE --target-dir=$DIFF_DST/$TIMESTAMP --incremental-basedir=$FULL_DST$LAST_FULL_BACKUP
+
+chown -R mysql:mysql $DIFF_DST/$TIMESTAMP
