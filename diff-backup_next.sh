@@ -14,8 +14,7 @@ echo "Первичная инкрментная резервная копия у
 
 echo "Создаем дополнительную инкрементную резервную копию"
 
-xtrabackup --databases=$DATABASE --backup --target-dir=$DIFF_DST/$LAST_DIFF_BACKUP-$TIME --incremental-basedir=$DIFF_DST/$DIFF_BASE_DIR 
-\ &> /tmp/diff_next_backup_$TIMESTAMP.log 
+xtrabackup --databases=$DATABASE --backup --target-dir=$DIFF_DST/$LAST_DIFF_BACKUP-$TIME --incremental-basedir=$DIFF_DST/$DIFF_BASE_DIR &> /tmp/diff_next_backup_$TIMESTAMP.log 
 
 echo "Назначаем корректного владельца и группу MySQL"
 
@@ -26,9 +25,5 @@ echo "Удаляем резервные копии старше 14 дней"
 find $DIFF_DST -mtime +14 -exec rm -rf {} \;
 
 echo "Создание дополнительной инкрементной резервной копии завершено"
-
-echo "Копию можно найти по указанному пути ниже"
-
-ls -ld $DIFF_DST/$DIFF_BASE_DIR | cut -c 43-
 
 echo ""
