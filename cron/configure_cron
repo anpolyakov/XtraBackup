@@ -1,0 +1,23 @@
+BACKUP_DIR=/tmp/backup      # директория для всех бэкапов
+DATABASE=mysql              # выбор базы данных для резервного копирования и восстановления
+TIMESTAMP=`date +%Y-%m-%d`  # переменная для получения текущей даты
+TIME=`date +%H-%M-%S`       # переменная для поучения текущего времени
+FULL_DST=$BACKUP_DIR/full   # директория для создания полных бэкапов
+DIFF_DST=$BACKUP_DIR/diff   # директория для создания инкрементных бэкапов
+LOCATION="/root/backup"     # корневая директория где находятся все скрипты для выполнения резервного копирования
+FULL_BACKUP_SCHEDULE=`echo 0 23 '*' '*' 1-5`    # расписание создание полных резервных копий 
+DIFF_BACKUP_SCHEDULE=`echo 0 10-18 '*' '*' 1-5` # расписание создания инкрементных резервных копий
+
+array=( $(find $FULL_DST -maxdepth 1 -type d -name '20*' | cut -c 17- | sort) ) # поиск последнего полного бэкапа
+LAST_FULL_BACKUP=`echo ${array[-1]} `
+
+array=( $(find $DIFF_DST -maxdepth 1 -type d -name '20??-??-??' | cut -c 18- | sort) ) # поиск последнего инкрементного бэкапа
+LAST_DIFF_BACKUP=`echo ${array[-1]}`
+
+diff_base_dir=( $(find $DIFF_DST -type d -name '20*' | cut -c 18- | sort) )
+
+array_next=( $(find $DIFF_DST -type d -name '20??-??-??-??-??-??' | cut -c 18- | sort) )
+
+LAST_DIFF_NEXT_BACKUP=`echo ${array_next[-1]}`
+
+DIFF_BASE_DIR=`echo ${diff_base_dir[-1]}`
