@@ -17,7 +17,7 @@ xtrabackup --backup --datadir=/var/lib/mysql/ --target-dir=/data/backups/mysql/
 
 Во время процесса резервного копирования, вы можете наблюдать большой объем вывода информации о том какие файлы были скопированы, какие логи были просканированны
 и также скопированы. Ниже пример того как это может выглядеть:
-
+```
 >> log scanned up to (3646475465483)
 >> log scanned up to (3646475517369)
 >> log scanned up to (3646475581716)
@@ -30,6 +30,7 @@ xtrabackup --backup --datadir=/var/lib/mysql/ --target-dir=/data/backups/mysql/
 [01] Copying /var/lib/mysql/var/ibdata1
      to /var/lib/mysql/Backups/2020-12-07_21-11-15/ibdata1
 [01]        ...done
+```
 
 После того как выполнение полного резервного копирования завершено, директория для создания полных бэкапов будет содержать примерно следующую информацию.
 Предположим, что есть база данных test с одной InnoDB таблицей test.tbl1 и используется опция MySQL innodb_file_per_table:
