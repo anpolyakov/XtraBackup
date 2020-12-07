@@ -11,13 +11,13 @@ DIFF_BACKUP_SCHEDULE=`echo 0 10-18 '*' '*' 1-5` # расписание созд�
 array=( $(find $FULL_DST -maxdepth 1 -type d -name '20*' | cut -c 17- | sort) ) # поиск последнего полного бэкапа
 LAST_FULL_BACKUP=`echo ${array[-1]} `
 
-array=( $(find $DIFF_DST -maxdepth 1 -type d -name '20??-??-??' | cut -c 18- | sort) ) # поиск последнего инкрементного бэкапа
-LAST_DIFF_BACKUP=`echo ${array[-1]}`
+array=( $(find $DIFF_DST -maxdepth 1 -type d -name '20??-??-??' | cut -c 18- | sort) ) # поиск последнего первичного инкрементного бэкапа
+LAST_DIFF_BACKUP=`echo ${array[-1]}` # поиск последнего инкрементного бэкапа с определенном формате
 
-diff_base_dir=( $(find $DIFF_DST -type d -name '20*' | cut -c 18- | sort) )
+diff_base_dir=( $(find $DIFF_DST -type d -name '20*' | cut -c 18- | sort) ) # поиск последнего инкрементного бэкапа
 
-array_next=( $(find $DIFF_DST -type d -name '20??-??-??-??-??-??' | cut -c 18- | sort) )
+array_next=( $(find $DIFF_DST -type d -name '20??-??-??-??-??-??' | cut -c 18- | sort) ) # поиск последнего вторичного инкрементного бэкапа
 
-LAST_DIFF_NEXT_BACKUP=`echo ${array_next[-1]}`
+LAST_DIFF_NEXT_BACKUP=`echo ${array_next[-1]}` # массив из найденных инкрментных бэкапов
 
-DIFF_BASE_DIR=`echo ${diff_base_dir[-1]}`
+DIFF_BASE_DIR=`echo ${diff_base_dir[-1]}` # массив из найденных инкрментных бэкапов в другом формате
