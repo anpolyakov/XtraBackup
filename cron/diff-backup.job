@@ -4,8 +4,9 @@
 # Variables
 #########################
 
-source $HOME/.bashrc
-source $LOCATION/cron/configure_cron 2>/dev/null
+source $HOME/.bashrc # импорт внешнего файла .bashrc
+source $LOCATION/cron/configure_cron 2>/dev/null # импорт внешнего файла configure_cron, 
+                                                 # $LOCATION это переменная с указанием директории, где лежат все скрипты
 
 #########################
 # Diff Backup
@@ -13,37 +14,39 @@ source $LOCATION/cron/configure_cron 2>/dev/null
 
 echo "Проверяем был ли сегодня уже создан первичный инкрементный бэкап"
 
-if [ ! -d "$DIFF_DST/$TIMESTAMP" ] 
+if [ ! -d "$DIFF_DST/$TIMESTAMP" ] # Проверка не существует ли директория первичного инкрементного бэкапа с текущей датой
 then
   
   echo "Первичный инкрементный бэкап не был создан сегодня, начинаем создание"
   
   echo "Создаем директорию для резервного копирования с текущей датой"
 
-  mkdir -p $DIFF_DST/$TIMESTAMP
+  mkdir -p $DIFF_DST/$TIMESTAMP # Создаем директорию с текущей датой в директории с инкрментными бэкапами
 
   echo "Создаем первичный инкрементный бэкап"
+  
+  # Создание первичного инкрементного бэкапа
 
   xtrabackup --backup --databases=$DATABASE --target-dir=$DIFF_DST/$TIMESTAMP --incremental-basedir=$FULL_DST$LAST_FULL_BACKUP \
   &> /tmp/diff_$TIMESTAMP_$TIME.log
 
   echo "Назначаем корректного владельца и группу для MySQL"
 
-  chown -R mysql:mysql $DIFF_DST/$TIMESTAMP
+  chown -R mysql:mysql $DIFF_DST/$TIMESTAMP # Назначаем корректного владельца и группу для MySQL
 
   echo "Удаляем резервные копии, которые старше 14 дней"
 
-  find $DIFF_DST -mtime +14 -exec rm -rf {} \;
+  find $DIFF_DST -mtime +14 -exec rm -rf {} \; # Удаляем резервные копии, которые старше 14 дней
 
   echo "Выполнение задачи по созданию инкрементной резервной копии завершено"
 
   echo "Копию можно найти по следующему адресу ниже"
    
-  ls -ld $DIFF_DST/$TIMESTAMP | cut -c 43-                       
+  ls -ld $DIFF_DST/$TIMESTAMP | cut -c 43-  # Вывод директории с созданным первичным инкрементным бэкапом                     
    
   echo ""
 
 else
   echo "Сегодня уже был создан первичный инкрементный бэкап, создаем дополнительный" 
-  $LOCATION/cron/./diff-backup_next.job
+  $LOCATION/cron/./diff-backup_next.job # переход к выполнению скрипта diff-backup_next.job
 fi
