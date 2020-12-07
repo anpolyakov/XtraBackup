@@ -1,4 +1,4 @@
-# Организация автоматического резервного копирования при помощи XtraBackup
+# Организация резервного копирования при помощи XtraBackup
 
 ## Полный цикл резервного копирования
 
@@ -186,7 +186,7 @@ xtrabackup --prepare --apply-log-only --target-dir=/data/backups/base --incremen
 
 xtrabackup --prepare --target-dir=/data/backups/base --incremental-dir=/data/backups/inc2
 
-
+## Автоматизация создания и подготовки полных и инкрементных бэкапов 
 
 
 
