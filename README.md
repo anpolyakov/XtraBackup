@@ -35,11 +35,13 @@ xtrabackup --backup --datadir=/var/lib/mysql/ --target-dir=/data/backups/mysql/
 После того как выполнение полного резервного копирования завершено, директория для создания полных бэкапов будет содержать примерно следующую информацию.
 Предположим, что есть база данных test с одной InnoDB таблицей test.tbl1 и используется опция MySQL innodb_file_per_table:
 
+```
 /data/backups/mysql/ibdata1
 /data/backups/mysql/test
 /data/backups/mysql/test/tbl1.ibd
 /data/backups/mysql/xtrabackup_checkpoints
 /data/backups/mysql/xtrabackup_logfile
+```
 
 Создание полной резервной копии может занимать длительное время, это зависит от того какой объем базы или баз.
 Абсолютно безопасно отменить создание полного резервного копирования в любой момент времени, потому что при создании полного бэкапа
