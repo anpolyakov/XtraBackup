@@ -4,8 +4,8 @@
 # Variables
 #########################
 
-source $HOME/.bashrc
-source $LOCATION/cron/configure_cron 2> /dev/null
+source $HOME/.bashrc # импорт файла .bashrc
+source $LOCATION/cron/configure_cron 2> /dev/null # импорт файла configure_cron
 
 #########################
 # Diff Next Backup
@@ -15,15 +15,17 @@ echo "Первичная инкрментная резервная копия у
 
 echo "Создаем дополнительную инкрементную резервную копию"
 
+# Создание дополнительного инкрементного бэкапа
+
 xtrabackup --databases=$DATABASE --backup --target-dir=$DIFF_DST/$LAST_DIFF_BACKUP-$TIME --incremental-basedir=$DIFF_DST/$DIFF_BASE_DIR &> /tmp/diff_next_backup_$TIMESTAMP.log 
 
 echo "Назначаем корректного владельца и группу MySQL"
 
-chown -R mysql:mysql $DIFF_DST/$TIMESTAMP
+chown -R mysql:mysql $DIFF_DST/$TIMESTAMP # Назначаем корректного владельца и группу MySQL
 
-echo "Удаляем резервные копии старше 14 дней"
+echo "Удаляем резервные копии старше 14 дней"  
 
-find $DIFF_DST -mtime +14 -exec rm -rf {} \;
+find $DIFF_DST -mtime +14 -exec rm -rf {} \; # Удаляем резервные копии старше 14 дней
 
 echo "Создание дополнительной инкрементной резервной копии завершено"
 
