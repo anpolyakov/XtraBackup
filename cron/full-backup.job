@@ -4,42 +4,44 @@
 # Variables
 #########################
 
-source $HOME/.bashrc
-source $LOCATION/cron/configure_cron 2> /dev/null
+source $HOME/.bashrc # импорт файла .bashrc
+source $LOCATION/cron/configure_cron 2> /dev/null # импорт файла configure_cron
 
 #########################
 # Full Backup Cron Job
 #########################
 
-echo "$FULL_DST/$TIMESTAMP"
-
-if [ -d "$FULL_DST/$TIMESTAMP" ]
+if [ -d "$FULL_DST/$TIMESTAMP" ] # проверка была ли создана директория с текущей датой для первичого бэкапа
 then
         echo "Сегодня уже был создан полный бэкап"
 else
     
-    mkdir -p $BACKUP_DIR
-    mkdir -p $FULL_DST/$TIMESTAMP
+    mkdir -p $BACKUP_DIR # создание директории для бэкапов, директория будет создана, если ранее не была создана
+    mkdir -p $FULL_DST/$TIMESTAMP # создание директории для полных бэкапов и директория для бэкапа с текущей датой
 
     echo "Создаем полную резервную копию"
+    
+    # Создание полной резервной копии
     
     xtrabackup --backup --databases $DATABASE --target-dir=$FULL_DST/$TIMESTAMP &> /tmp/full_backup_$TIMESTAMP.log
 
     echo "Подготавливаем резервную копию для восстановления"
     
+    # Для того чтобы бэкап был консистентным при восстановлением, производится его подготовка к восстановлению
+    
     xtrabackup --prepare --target-dir=$FULL_DST/$TIMESTAMP &> /tmp/full_prepare_backup_$TIMESTAMP.log
 
     echo "Назначаем корректного владельца и группу для MySQL"
 
-    chown -R mysql:mysql $FULL_DST/$TIMESTAMP
+    chown -R mysql:mysql $FULL_DST/$TIMESTAMP # Назначаем корректного владельца и группу для MySQL
 
     echo "Удаляем все резервные копии старше 14 дней"
 
-    find $FULL_DST -mtime +14 -exec rm -rf {} \;
+    find $FULL_DST -mtime +14 -exec rm -rf {} \; # Удаляем резервные копии старше 14 дней
 
     echo "Задача полного резервного копирования завершена, полную резервную копию можно найти по указанному пути ниже"
 
-    ls -ld $FULL_DST/$TIMESTAMP | cut -c 43-
+    ls -ld $FULL_DST/$TIMESTAMP | cut -c 43- # вывод названия созданной резервной копии с полным бэкапом
 
     echo " "
 
